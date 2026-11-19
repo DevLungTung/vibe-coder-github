@@ -1,5 +1,5 @@
 const todos = [
-  { id: 1, title: 'Learn Git basics', done: false },
+  { id: 1, title: 'Master Git and GitHub fundamentals', done: false },
   { id: 2, title: 'Create my first commit', done: true },
   { id: 3, title: 'Push to GitHub', done: false }
 ];

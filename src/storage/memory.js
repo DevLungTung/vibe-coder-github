@@ -1,4 +1,4 @@
-let todos = [
+const todos = [
   { id: 1, title: 'Learn Git basics', done: false },
   { id: 2, title: 'Create my first commit', done: true },
   { id: 3, title: 'Push to GitHub', done: false }
@@ -26,7 +26,9 @@ export const memoryStorage = {
 
   async update(id, todoData) {
     const index = todos.findIndex(todo => todo.id === parseInt(id));
-    if (index === -1) return null;
+    if (index === -1) {
+      return null;
+    }
     
     todos[index] = {
       ...todos[index],
@@ -38,7 +40,9 @@ export const memoryStorage = {
 
   async delete(id) {
     const index = todos.findIndex(todo => todo.id === parseInt(id));
-    if (index === -1) return false;
+    if (index === -1) {
+      return false;
+    }
     
     todos.splice(index, 1);
     return true;

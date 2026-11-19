@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.env
+.env.local
+.git
+.gitignore
+README.md
+.vscode
+.idea
+coverage
+*.log
+.DS_Store
+Thumbs.db
+tests
+vitest.config.js
+eslint.config.js

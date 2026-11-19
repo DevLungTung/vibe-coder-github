@@ -1,0 +1,26 @@
+{
+  "name": "vibe-coder-todo-app",
+  "version": "1.0.0",
+  "description": "A simple TODO API for teaching Git & GitHub to vibe coders",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src tests"
+  },
+  "keywords": ["todo", "express", "teaching"],
+  "author": "Quân IT",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "supertest": "^6.3.3",
+    "vitest": "^1.0.4"
+  }
+}

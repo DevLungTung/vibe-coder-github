@@ -5,7 +5,16 @@ export const todoRouter = express.Router();
 
 todoRouter.get('/', async (req, res) => {
   try {
-    const todos = await storage.getAll();
+    let todos = await storage.getAll();
+    
+    // Filter by status if query param provided
+    const { status } = req.query;
+    if (status === 'done') {
+      todos = todos.filter(todo => todo.done === true);
+    } else if (status === 'pending') {
+      todos = todos.filter(todo => todo.done === false);
+    }
+    
     res.json(todos);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch todos' });

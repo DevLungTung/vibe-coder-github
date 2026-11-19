@@ -27,10 +27,7 @@ todoRouter.get('/:id', async (req, res) => {
 todoRouter.post('/', async (req, res) => {
   try {
     const { title } = req.body;
-    if (!title || title.trim() === '') {
-      return res.status(400).json({ error: 'Title is required' });
-    }
-    
+    // BUG: Removed validation - this will break the test!
     const todo = await storage.create({ title: title.trim(), done: false });
     res.status(201).json(todo);
   } catch (error) {

@@ -34,7 +34,10 @@ export default [
         it: 'readonly',
         expect: 'readonly',
         beforeEach: 'readonly',
-        afterEach: 'readonly'
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        Buffer: 'readonly'
       }
     }
   }

@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Image published successfully
+        run: |
+          echo "✅ Docker image pushed to ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          echo "📦 Tags: ${{ steps.meta.outputs.tags }}"
+
+  # Deployment step (disabled by default - configure for your infrastructure)
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: false  # Enable this when you're ready to deploy
+    
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "🚀 Ready to deploy!"
+          echo ""
+          echo "Example deployment options:"
+          echo ""
+          echo "Option 1: Deploy to VPS via SSH"
+          echo "  - Add SSH_PRIVATE_KEY, SSH_HOST, SSH_USER to GitHub Secrets"
+          echo "  - Use appleboy/ssh-action to connect and pull the new image"
+          echo "  - Run: docker-compose pull && docker-compose up -d"
+          echo ""
+          echo "Option 2: Deploy to Render/Railway/Fly.io"
+          echo "  - Add DEPLOY_HOOK_URL to GitHub Secrets"
+          echo "  - Use: curl -X POST \${{ secrets.DEPLOY_HOOK_URL }}"
+          echo ""
+          echo "Option 3: Deploy to Kubernetes"
+          echo "  - Configure kubectl with cluster credentials"
+          echo "  - Update deployment: kubectl set image deployment/todo-app app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo ""
+          echo "📚 To enable: Change 'if: false' to 'if: true' above and add your deployment commands"
+          
+      # Example: Deploy to VPS via SSH (uncomment and configure)
+      # - name: Deploy to VPS
+      #   uses: appleboy/ssh-action@v1.0.0
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       cd /app/todo
+      #       docker-compose pull
+      #       docker-compose up -d
+      
+      # Example: Trigger Render deploy hook (uncomment and configure)
+      # - name: Trigger Render Deploy
+      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
